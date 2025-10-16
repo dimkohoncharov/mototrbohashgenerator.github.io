@@ -1,7 +1,7 @@
 {
   "name": "MotoTRBO Hash Generator",
-  "short_name": "MotoTRBO KeyGene",
-  "description": "Key Generator for MotoTRBO radiostations",
+  "short_name": "MotoTRBO HashGen",
+  "description": "Hash generator for MotoTRBO radios",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#00529B",
