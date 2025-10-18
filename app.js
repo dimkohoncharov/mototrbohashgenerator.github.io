@@ -48,7 +48,7 @@ async function generateAES256Key() {
         hex = Array.from(bytes, b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
     return hex;
 }
-async function generateRandomHex(n) {
+async function generateRasKey(n) {
     if (!Number.isInteger(n) || n <= 0)
         throw new RangeError('n must be a positive integer');
 
@@ -67,7 +67,26 @@ async function generateRandomHex(n) {
 
     return result;
 }
-async function generateRandomNumber(n) {
+async function generatePSKKey(n) {
+    if (!Number.isInteger(n) || n <= 0)
+        throw new RangeError('n must be a positive integer less than 32 symbols');
+    let result = '0'.repeat(32-n);
+    const charset = '0123456789ABCDEF';
+    const rnd = new Uint8Array(n);
+
+    if (!globalThis.crypto || !globalThis.crypto.getRandomValues)
+        throw new Error('crypto.getRandomValues not available in this environment');
+
+    crypto.getRandomValues(rnd);
+
+    
+    for (let i = 0; i < n; i++) {
+        result += charset[rnd[i] % charset.length];
+    }
+
+    return result;
+}
+async function generateOTAPKey(n) {
     if (!Number.isInteger(n) || n <= 0)
         throw new RangeError('n must be a positive integer');
 
@@ -104,7 +123,7 @@ async function generateRASKeys() {
     const keyLength = parseInt(document.getElementById("ras_keys_length").value);
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
-        let hex = await generateRandomHex(keyLength);
+        let hex = await generateRasKey(keyLength);
         document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([`RAS Key ${i}`, hex])
         );
@@ -116,7 +135,7 @@ async function generateOTAPKeys() {
     const keysCount = parseInt(document.getElementById("otap_keys_count").value);
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
-        let hex = await generateRandomNumber(keyLength);
+        let hex = await generateOTAPKey(keyLength);
         document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([`Otap Key ${i}`, hex])
         );
@@ -128,7 +147,7 @@ async function generatePSKKeys() {
     const keysCount = parseInt(document.getElementById("psk_keys_count").value);
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
-        let hex = await generateRandomHex(keyLength);
+        let hex = await generatePSKKey(keyLength);
         document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([`PSK Key ${i}`, hex])
         );
