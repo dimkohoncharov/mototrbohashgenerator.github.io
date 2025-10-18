@@ -55,24 +55,8 @@
       <div class="col s12">
         <button class="btn waves-effect waves-light" type="submit"
           onclick="javascript:generateSymmetricKeys()">Generate</button>
-      </div>
-      <div class="col s12">
-        <table class="output hidden" id="symmetric_keys_output">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Hash</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td><i class="material-icons copy">content_copy</i><span>adsfdsfkjl2314dasfdsf</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn waves-effect waves-light red clear output hidden" style="margin-top: 24px"
-          onclick="javascript:clearContent()">Clear</button>
+        <button class="btn waves-effect waves-light export" type="submit"
+          onclick="javascript:exportTableToCSV('#keys_output')">Export</button>
       </div>
     </div>
   </div>
@@ -91,24 +75,8 @@
       <div class="col s12">
         <button class="btn waves-effect waves-light" type="submit"
           onclick="javascript:generateRASKeys()">Generate</button>
-      </div>
-      <div class="col s12">
-        <table class="output hidden" id="ras_keys_output">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Hash</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td><i class="material-icons copy">content_copy</i><span>adsfdsfkjl2314dasfdsf</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn waves-effect waves-light red clear output hidden" style="margin-top: 24px"
-          onclick="javascript:clearContent()">Clear</button>
+        <button class="btn waves-effect waves-light export" type="submit"
+          onclick="javascript:exportTableToCSV('#keys_output')">Export</button>
       </div>
     </div>
   </div>
@@ -127,24 +95,8 @@
       <div class="col s12">
         <button class="btn waves-effect waves-light" type="submit"
           onclick="javascript:generateOTAPKeys()">Generate</button>
-      </div>
-      <div class="col s12">
-        <table class="output hidden" id="otap_keys_output">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Hash</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td><i class="material-icons copy">content_copy</i><span>adsfdsfkjl2314dasfdsf</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn waves-effect waves-light red clear output hidden" style="margin-top: 24px"
-          onclick="javascript:clearContent()">Clear</button>
+        <button class="btn waves-effect waves-light export" type="submit"
+          onclick="javascript:exportTableToCSV('#keys_output')">Export</button>
       </div>
     </div>
   </div>
@@ -162,25 +114,29 @@
       <div class="col s12">
         <button class="btn waves-effect waves-light" type="submit"
           onclick="javascript:generatePSKKeys()">Generate</button>
+        <button class="btn waves-effect waves-light export" type="submit"
+          onclick="javascript:exportTableToCSV('#keys_output')">Export</button>
       </div>
-      <div class="col s12">
-        <table class="output hidden" id="psk_keys_output">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Hash</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td></td>
-              <td><i class="material-icons copy">content_copy</i><span>adsfdsfkjl2314dasfdsf</span></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn waves-effect waves-light red clear output hidden" style="margin-top: 24px"
-          onclick="javascript:clearContent()">Clear</button>
-      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col s12">
+      <table class="output hidden" id="keys_output">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Hash</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            <td><i class="material-icons copy">content_copy</i><span>adsfdsfkjl2314dasfdsf</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn waves-effect waves-light red clear output hidden" style="margin-top: 24px"
+        onclick="javascript:clearContent()">Clear</button>
     </div>
   </div>
   <script>

@@ -1,3 +1,46 @@
+async function exportTableToCSV(tableSelector) {
+    const table = document.querySelector(tableSelector);
+    if (!table) throw new Error('Table not found: ' + tableSelector);
+
+    const rows = table.querySelectorAll('tr');
+    const lines = [];
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('th, td');
+        const line = Array.from(cells).map(c => c.innerText.trim()).join(' ');
+        lines.push(line);
+    });
+
+    const csv = lines.join('\n');
+    const blob = new Blob([csv], { type: 'text/plain;charset=utf-8;' });
+
+    // якщо File System Access API доступний — показати діалог збереження
+    if (window.showSaveFilePicker) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: 'keys.txt',
+                types: [{
+                    description: 'Text files',
+                    accept: { 'text/plain': ['.txt', '.csv'] },
+                }],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            alert('Файл збережено успішно!');
+        } catch (err) {
+            if (err.name !== 'AbortError') console.error('Помилка збереження:', err);
+        }
+    } else {
+        // fallback для Safari/Firefox
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'table.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+}
 async function generateAES256Key() {
     const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]),
         raw = await crypto.subtle.exportKey("raw", key),
@@ -37,7 +80,7 @@ async function generateRandomNumber(n) {
     while (digits.length < n) {
         crypto.getRandomValues(byte);
         const val = byte[0];
-        if (val > 249) continue; // відкидаємо надлишкові байти
+        if (val > 249) continue;
         digits.push(val % 10);
     }
 
@@ -49,11 +92,11 @@ async function generateSymmetricKeys() {
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
         let hex = await generateAES256Key(startId + i);
-        document.querySelector("#symmetric_keys_output tbody").appendChild(
+        document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([startId + i, hex])
         );
     }
-    showContent('symmetric_keys_output');
+    showContent('keys_output');
 }
 
 async function generateRASKeys() {
@@ -62,11 +105,11 @@ async function generateRASKeys() {
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
         let hex = await generateRandomHex(keyLength);
-        document.querySelector("#ras_keys_output tbody").appendChild(
+        document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([`RAS Key ${i}`, hex])
         );
     }
-    showContent("ras_keys_output");
+    showContent("keys_output");
 }
 async function generateOTAPKeys() {
     const keyLength = parseInt(document.getElementById("otap_keys_length").value);
@@ -74,11 +117,11 @@ async function generateOTAPKeys() {
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
         let hex = await generateRandomNumber(keyLength);
-        document.querySelector("#otap_keys_output tbody").appendChild(
+        document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([`Otap Key ${i}`, hex])
         );
     }
-    showContent("otap_keys_output");
+    showContent("keys_output");
 }
 async function generatePSKKeys() {
     const keyLength = parseInt(document.getElementById("psk_keys_length").value);
@@ -86,11 +129,11 @@ async function generatePSKKeys() {
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
         let hex = await generateRandomHex(keyLength);
-        document.querySelector("#psk_keys_output tbody").appendChild(
+        document.querySelector("#keys_output tbody").appendChild(
             generateTableRow([`PSK Key ${i}`, hex])
         );
     }
-    showContent("psk_keys_output");
+    showContent("keys_output");
 }
 function generateTableRow(data) {
     let tr = document.createElement("tr");
