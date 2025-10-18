@@ -1,15 +1,3 @@
-function generateRandomHexSync(n) {
-    if (!Number.isInteger(n) || n <= 0) throw new RangeError('n must be a positive integer');
-    const neededBytes = Math.ceil(n / 2);
-    const rnd = new Uint8Array(neededBytes);
-    if (!globalThis.crypto || !globalThis.crypto.getRandomValues) {
-        throw new Error('crypto.getRandomValues not available in this environment');
-    }
-    crypto.getRandomValues(rnd);
-    const hex = Array.from(rnd).map(b => b.toString(16).padStart(2, '0')).join('');
-    return hex.slice(0, n);
-}
-
 async function generateAES256Key() {
     const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]),
         raw = await crypto.subtle.exportKey("raw", key),
@@ -18,15 +6,42 @@ async function generateAES256Key() {
     return hex;
 }
 async function generateRandomHex(n) {
-    if (!Number.isInteger(n) || n <= 0) throw new RangeError('n must be a positive integer');
-    const neededBytes = Math.ceil(n / 2);
-    const rnd = new Uint8Array(neededBytes);
-    if (!globalThis.crypto || !globalThis.crypto.getRandomValues) {
+    if (!Number.isInteger(n) || n <= 0)
+        throw new RangeError('n must be a positive integer');
+
+    const charset = '0123456789abcdefABCDEF#$-_';
+    const rnd = new Uint8Array(n);
+
+    if (!globalThis.crypto || !globalThis.crypto.getRandomValues)
         throw new Error('crypto.getRandomValues not available in this environment');
-    }
+
     crypto.getRandomValues(rnd);
-    const hex = Array.from(rnd).map(b => b.toString(16).padStart(2, '0')).join('');
-    return hex.slice(0, n).toUpperCase();
+
+    let result = '';
+    for (let i = 0; i < n; i++) {
+        result += charset[rnd[i] % charset.length];
+    }
+
+    return result;
+}
+async function generateRandomNumber(n) {
+    if (!Number.isInteger(n) || n <= 0)
+        throw new RangeError('n must be a positive integer');
+
+    if (!globalThis.crypto || !globalThis.crypto.getRandomValues)
+        throw new Error('crypto.getRandomValues not available');
+
+    const digits = [];
+    const byte = new Uint8Array(1);
+
+    while (digits.length < n) {
+        crypto.getRandomValues(byte);
+        const val = byte[0];
+        if (val > 249) continue; // відкидаємо надлишкові байти
+        digits.push(val % 10);
+    }
+
+    return digits.join('');
 }
 async function generateSymmetricKeys() {
     const keysCount = parseInt(document.getElementById("symmetric_keys_count").value);
@@ -58,7 +73,7 @@ async function generateOTAPKeys() {
     const keysCount = parseInt(document.getElementById("otap_keys_count").value);
     clearContent();
     for (let i = 1; i <= keysCount; i++) {
-        let hex = await generateRandomHex(keyLength);
+        let hex = await generateRandomNumber(keyLength);
         document.querySelector("#otap_keys_output tbody").appendChild(
             generateTableRow([`Otap Key ${i}`, hex])
         );
