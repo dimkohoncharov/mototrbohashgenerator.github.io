@@ -27,9 +27,9 @@ async function exportTableToCSV(tableSelector) {
             const writable = await handle.createWritable();
             await writable.write(blob);
             await writable.close();
-            alert('Файл збережено успішно!');
+            alert('Keys exported successfully!');
         } catch (err) {
-            if (err.name !== 'AbortError') console.error('Помилка збереження:', err);
+            if (err.name !== 'AbortError') console.error('Export error:', err);
         }
     } else {
         // fallback для Safari/Firefox
