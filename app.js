@@ -27,7 +27,7 @@ async function exportTableToCSV(tableSelector) {
             const writable = await handle.createWritable();
             await writable.write(blob);
             await writable.close();
-            alert('Keys exported successfully!');
+            alert('Hashes exported successfully!');
         } catch (err) {
             if (err.name !== 'AbortError') console.error('Export error:', err);
         }
