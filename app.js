@@ -6,7 +6,7 @@ async function exportTableToCSV(tableSelector) {
     const lines = [];
 
     rows.forEach(row => {
-        const cells = row.querySelectorAll('th, td');
+        const cells = row.querySelectorAll('td');
         const line = Array.from(cells).map(c => c.innerText.trim()).join(' ');
         lines.push(line);
     });
@@ -18,7 +18,7 @@ async function exportTableToCSV(tableSelector) {
     if (window.showSaveFilePicker) {
         try {
             const handle = await window.showSaveFilePicker({
-                suggestedName: 'keys.txt',
+                suggestedName: 'hashes.txt',
                 types: [{
                     description: 'Text files',
                     accept: { 'text/plain': ['.txt', '.csv'] },
@@ -36,7 +36,7 @@ async function exportTableToCSV(tableSelector) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'table.txt';
+        a.download = 'hashes.txt';
         a.click();
         URL.revokeObjectURL(url);
     }
